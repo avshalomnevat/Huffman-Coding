@@ -7,6 +7,8 @@
 
 #include "HuffmanCodingTree.hpp"
 
+#define OUTPUT_FILE "compressed.bin"
+
 std::string read_file(std::filesystem::path path) {
     try {
         if (!std::filesystem::exists(path)) {
@@ -54,6 +56,11 @@ int main(int argc, char* argv[]) {
         auto frequency = map_to_vector(calculate_frequency(data));
 		
         auto root = build_huffman_tree(frequency, frequency.size());
+		
+		std::unordered_map<char, std::string> codes;
+		generate_huffman_codes(std::move(root), "", codes);
+		
+		std::string compressed = compress(data, codes);
     }
     catch (const std::exception& e) {
         std::cerr << "Error: " << e.what() << std::endl;

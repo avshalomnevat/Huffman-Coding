@@ -1,5 +1,4 @@
 #include "MinHeapTree.hpp"
-#include <queue>
 
 std::unique_ptr<Node> build_huffman_tree(std::vector<std::pair<char, int>> f, int s) {
     if (s < 1) {
@@ -31,3 +30,24 @@ std::unique_ptr<Node> build_huffman_tree(std::vector<std::pair<char, int>> f, in
     return get_min(tree);
 }
 
+void generate_huffman_codes(std::unique_ptr<Node> root, std::string current_code, std::unordered_map<char, std::string>& codes) {
+	if (!root) return;
+    
+    if (root->left == nullptr && root->right == nullptr) {
+        codes[root->character] = current_code;
+        return;
+    }
+
+    generate_huffman_codes(std::move(root->left), current_code + "0", codes);
+    generate_huffman_codes(std::move(root->right), current_code + "1", codes);
+}
+
+std::string compress(std::string text, std::unordered_map<char, std::string>& codes) {
+	std::string encoded;
+	
+	for (auto const c : text) {
+		encoded += codes[c];
+	}
+	
+	return encoded;
+}
